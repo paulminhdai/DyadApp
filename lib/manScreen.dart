@@ -8,6 +8,7 @@ class manScreen extends StatefulWidget {
 }
 
 class _manScreenState extends State<manScreen> {
+  var token = '';
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -26,44 +27,45 @@ class _manScreenState extends State<manScreen> {
           elevation: 0,
         ),
         backgroundColor: Colors.transparent,
-        // body:  Column(
-        //   mainAxisAlignment: MainAxisAlignment.center,
-        //   children: [
-        //     Container(
-        //       margin: EdgeInsets.only(bottom: 20),
-        //       child: Row(
-        //         mainAxisAlignment: MainAxisAlignment.center,
-        //         children: [
-        //           Text(
-        //             "Haven't had a code yet?!?",
-        //             style: TextStyle(
-        //                 fontWeight: FontWeight.bold,
-        //                 fontSize: 25,
-        //                 color: Colors.lightBlue[400]
-        //             ),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //
-        //     Container(
-        //       margin: EdgeInsets.only(bottom: 10, left: 60, right: 60),
-        //       child: RaisedButton(
-        //         padding: EdgeInsets.all(15),
-        //           textColor: Colors.white,
-        //           color: Colors.lightBlue[300],
-        //           shape: RoundedRectangleBorder(
-        //             borderRadius: BorderRadius.circular(18.0),
-        //           ),
-        //           child: Text('Generate the pair code'),
-        //           onPressed: () {
-        //
-        //           }
-        //         ),
-        //       ),
-        //     ],
-        //   )
-            body:  Column(
+        body: token.isEmpty
+            ? Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                margin: EdgeInsets.only(bottom: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Haven't had a code yet?!?",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25,
+                          color: Colors.lightBlue[400]
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              Container(
+                margin: EdgeInsets.only(bottom: 10, left: 60, right: 60),
+                child: RaisedButton(
+                  padding: EdgeInsets.all(15),
+                    textColor: Colors.white,
+                    color: Colors.lightBlue[300],
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                    ),
+                    child: Text('Generate the pair code'),
+                    onPressed: () {
+
+                    }
+                  ),
+                ),
+              ],
+            )
+            :  Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
