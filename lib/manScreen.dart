@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
+
+import 'constants.dart';
 
 class manScreen extends StatefulWidget {
   const manScreen({Key? key}) : super(key: key);
@@ -9,6 +12,23 @@ class manScreen extends StatefulWidget {
 
 class _manScreenState extends State<manScreen> {
   var token = '';
+  @override
+  void initState() {
+    super.initState();
+    configOneSignal();
+  }
+
+  void configOneSignal() {
+    OneSignal.shared.init(oneSignalID);
+  }
+
+  Future<void> getToken() async {
+    var status = await OneSignal.shared.getPermissionSubscriptionState();
+    String tokenId = status.subscriptionStatus.userId;
+    token = tokenId;
+    print(token);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -58,9 +78,7 @@ class _manScreenState extends State<manScreen> {
                       borderRadius: BorderRadius.circular(18.0),
                     ),
                     child: Text('Generate the pair code'),
-                    onPressed: () {
-
-                    }
+                    onPressed: getToken
                   ),
                 ),
               ],
