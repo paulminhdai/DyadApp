@@ -1,7 +1,7 @@
 import 'package:Dyad/manScreen.dart';
 import 'package:Dyad/womanScreen.dart';
 import 'package:flutter/material.dart';
-"https://sanjay144.medium.com/how-to-send-notification-from-device-to-device-in-flutter-7a47c911d66"
+//https://sanjay144.medium.com/how-to-send-notification-from-device-to-device-in-flutter-7a47c911d66
 void main() {
   runApp(MyApp());
 }

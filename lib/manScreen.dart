@@ -1,6 +1,8 @@
+import 'dart:convert';
+
+import 'package:Dyad/actions.dart';
 import 'package:flutter/material.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-
 import 'constants.dart';
 
 class manScreen extends StatefulWidget {
@@ -11,7 +13,8 @@ class manScreen extends StatefulWidget {
 }
 
 class _manScreenState extends State<manScreen> {
-  var token = '';
+  var number = "";
+  bool _isLoading = false;
   @override
   void initState() {
     super.initState();
@@ -22,11 +25,19 @@ class _manScreenState extends State<manScreen> {
     OneSignal.shared.init(oneSignalID);
   }
 
-  Future<void> getToken() async {
+  Future<void> getNumber() async {
+    setState(() {
+      _isLoading = true;
+    });
     var status = await OneSignal.shared.getPermissionSubscriptionState();
     String tokenId = status.subscriptionStatus.userId;
-    token = tokenId;
-    print(token);
+    var response = await postToken(tokenId);
+    var responseBody = json.decode(response.body);
+    setState(() {
+      number = responseBody["number"].toString();
+      _isLoading = false;
+    });
+    //print(responseBody["number"]);
   }
 
   @override
@@ -47,39 +58,43 @@ class _manScreenState extends State<manScreen> {
           elevation: 0,
         ),
         backgroundColor: Colors.transparent,
-        body: token.isEmpty
+        body: number.isEmpty
             ? Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                margin: EdgeInsets.only(bottom: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Haven't had a code yet?!?",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 25,
-                          color: Colors.lightBlue[400]
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(bottom: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Haven't had a code yet?!?",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 25,
+                            color: Colors.lightBlue[400]
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-
-              Container(
-                margin: EdgeInsets.only(bottom: 10, left: 60, right: 60),
-                child: RaisedButton(
-                  padding: EdgeInsets.all(15),
-                    textColor: Colors.white,
-                    color: Colors.lightBlue[300],
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                    ),
-                    child: Text('Generate the pair code'),
-                    onPressed: getToken
+                    ],
                   ),
+                ),
+
+                Container(
+                  margin: EdgeInsets.only(bottom: 10, left: 60, right: 60),
+                  child: _isLoading ?
+                  CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.lightBlue),
+                  ):
+                  RaisedButton(
+                    padding: EdgeInsets.all(15),
+                      textColor: Colors.white,
+                      color: Colors.lightBlue[300],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                      ),
+                      child: Text('Generate the pair code'),
+                      onPressed: getNumber
+                  )
                 ),
               ],
             )
@@ -106,7 +121,7 @@ class _manScreenState extends State<manScreen> {
                 Container(
                   margin: EdgeInsets.only(bottom: 20, left: 60, right: 60),
                   child: Text(
-                    "2526",
+                    number,
                     style: TextStyle(
                       fontSize: 90,
                       fontWeight: FontWeight.bold,
@@ -118,7 +133,7 @@ class _manScreenState extends State<manScreen> {
                   style: ButtonStyle(
                     foregroundColor: MaterialStateProperty.all<Color>(Colors.lightBlue.shade300),
                   ),
-                  onPressed: () { },
+                  onPressed: getNumber,
                   child: Text('Generate new code?'),
                 )
               ],

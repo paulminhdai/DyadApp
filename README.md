@@ -1,4 +1,4 @@
-# bearneed
+# Dyad App
 
 A new Flutter project.
 

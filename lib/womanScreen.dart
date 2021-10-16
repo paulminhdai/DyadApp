@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:Dyad/actions.dart';
 import 'package:Dyad/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -12,7 +12,8 @@ class womanScreen extends StatefulWidget {
 }
 
 class _womanScreenState extends State<womanScreen> {
-  var token = "1b8ceb32-4d90-457f-b1a2-8a6e3a652e66";
+  var codeController = TextEditingController();
+  var token = "";
 
   Future<Response> sendNotification(List<String> tokenIdList, String contents, String heading) async{
 
@@ -33,6 +34,17 @@ class _womanScreenState extends State<womanScreen> {
         "contents": {"en": contents},
       }),
     );
+  }
+
+  Future<void> loadToken() async {
+    var res = await fetchToken(codeController.text);
+
+    setState(() {
+      if (res != "null") {
+        //print(token);
+        token = res;
+      }
+    });
   }
 
   @override
@@ -99,6 +111,7 @@ class _womanScreenState extends State<womanScreen> {
                   width: 250,
                   margin: EdgeInsets.only(bottom: 30),
                   child: TextField(
+                    controller: codeController,
                     obscureText: false,
                       style: TextStyle(
                           fontSize: 14,
@@ -122,7 +135,8 @@ class _womanScreenState extends State<womanScreen> {
                       ),
                       child: Text('Enter'),
                       onPressed: () {
-
+                        print(codeController.text);
+                        loadToken();
                       }
                     ),
                   ),
@@ -132,7 +146,7 @@ class _womanScreenState extends State<womanScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  margin: EdgeInsets.only(bottom: 30),
+                  margin: EdgeInsets.only(bottom: 20),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -151,8 +165,8 @@ class _womanScreenState extends State<womanScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      width: 180.0,
-                      height: 180.0,
+                      width: 150.0,
+                      height: 150.0,
                       margin: EdgeInsets.all(10),
                       child: RaisedButton(
                         padding: EdgeInsets.all(15),
@@ -168,8 +182,8 @@ class _womanScreenState extends State<womanScreen> {
                       ),
                     ),
                     Container(
-                      width: 180.0,
-                      height: 180.0,
+                      width: 150.0,
+                      height: 150.0,
                       margin: EdgeInsets.all(10),
                       child: RaisedButton(
                           padding: EdgeInsets.all(15),
@@ -190,8 +204,8 @@ class _womanScreenState extends State<womanScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      width: 180.0,
-                      height: 180.0,
+                      width: 150.0,
+                      height: 150.0,
                       margin: EdgeInsets.all(10),
                       child: RaisedButton(
                           padding: EdgeInsets.all(15),
@@ -207,8 +221,8 @@ class _womanScreenState extends State<womanScreen> {
                       ),
                     ),
                     Container(
-                      width: 180.0,
-                      height: 180.0,
+                      width: 150.0,
+                      height: 150.0,
                       margin: EdgeInsets.all(10),
                       child: RaisedButton(
                           padding: EdgeInsets.all(15),
