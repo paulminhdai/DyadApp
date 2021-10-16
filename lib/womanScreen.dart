@@ -13,6 +13,7 @@ class womanScreen extends StatefulWidget {
 
 class _womanScreenState extends State<womanScreen> {
   var codeController = TextEditingController();
+  bool _isLoading = false;
   var token = "";
 
   Future<Response> sendNotification(List<String> tokenIdList, String contents, String heading) async{
@@ -29,7 +30,7 @@ class _womanScreenState extends State<womanScreen> {
         // android_accent_color represent the color of the heading text in the notification
         "android_accent_color":"FF9976D2",
         "small_icon":"ic_stat_onesignal_default",
-        "large_icon":"https://www.filepicker.io/api/file/zPloHSmnQsix82nlj9Aj?filename=name.jpg",
+        "large_icon":"https://png.pngtree.com/png-vector/20190228/ourlarge/pngtree-love-heart-icon-design-template-vector-isolated-png-image_707565.jpg",
         "headings": {"en": heading},
         "contents": {"en": contents},
       }),
@@ -37,6 +38,9 @@ class _womanScreenState extends State<womanScreen> {
   }
 
   Future<void> loadToken() async {
+    setState(() {
+      _isLoading = true;
+    });
     var res = await fetchToken(codeController.text);
 
     setState(() {
@@ -44,6 +48,7 @@ class _womanScreenState extends State<womanScreen> {
         //print(token);
         token = res;
       }
+      _isLoading = false;
     });
   }
 
@@ -124,6 +129,10 @@ class _womanScreenState extends State<womanScreen> {
                     ),
                   ),
                 ),
+                _isLoading ?
+                CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.lightBlue),
+                ):
                 Container(
                   margin: EdgeInsets.only(bottom: 10, left: 60, right: 60),
                   child: RaisedButton(
