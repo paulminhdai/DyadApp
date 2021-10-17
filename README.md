@@ -1,7 +1,7 @@
 # Dyad App
-A mobile application connects couple together.
+A mobile application (android only) connects couple together.
 
-# Get Stated
+## Get Stated
 1. Install flutter
 2. Set up OneSignal to the application, [Instruction here](https://sanjay144.medium.com/how-to-send-notification-from-device-to-device-in-flutter-7a47c911d66)
 3. Add OneSignalID to constant.dart
@@ -19,8 +19,12 @@ A mobile application connects couple together.
 3. The woman enter the code from your man
 4. The woman can choose one in four options to push notifications to your man's phone
 
+## Demo
+
+https://user-images.githubusercontent.com/66444176/137605259-9a06e9ef-b01a-46e0-ab1d-f889bd05d954.mov
+
 ## Authors
 * **Dai Vuong** - [My website](https://daivuong.herokuapp.com) - [My LinkedIn](https://www.linkedin.com/in/daivuong/)
 
 ## Acknowledgments
-* This is project for my CS4750 class at Cal Poly Pomona
+* This is project for my CS4750 class at Cal Poly Pomona Fall 2021
