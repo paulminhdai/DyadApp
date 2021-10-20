@@ -3,6 +3,7 @@ import 'package:Dyad/actions.dart';
 import 'package:Dyad/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class womanScreen extends StatefulWidget {
   const womanScreen({Key? key}) : super(key: key);
@@ -14,7 +15,21 @@ class womanScreen extends StatefulWidget {
 class _womanScreenState extends State<womanScreen> {
   var codeController = TextEditingController();
   bool _isLoading = false;
-  var token = "";
+  var _token = "";
+
+  // load number from local storage
+  void _loadToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _token = (prefs.getString('token') ?? "");
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadToken();
+  }
 
   Future<Response> sendNotification(List<String> tokenIdList, String contents, String heading) async{
 
@@ -37,16 +52,20 @@ class _womanScreenState extends State<womanScreen> {
     );
   }
 
-  Future<void> loadToken() async {
+  Future<void> getToken() async {
     setState(() {
       _isLoading = true;
     });
     var res = await fetchToken(codeController.text);
 
+    // Save token to local storage
+    final prefs = await SharedPreferences.getInstance();
+    if (res.isNotEmpty && res != "null")
+      prefs.setString('token', res);
+
     setState(() {
       if (res != "null") {
-        //print(token);
-        token = res;
+        _token = res;
       }
       _isLoading = false;
     });
@@ -70,7 +89,7 @@ class _womanScreenState extends State<womanScreen> {
               elevation: 0,
             ),
             backgroundColor: Colors.transparent,
-            body: token.isEmpty
+            body: _token.isEmpty
               ? Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -145,7 +164,7 @@ class _womanScreenState extends State<womanScreen> {
                       child: Text('Enter'),
                       onPressed: () {
                         print(codeController.text);
-                        loadToken();
+                        getToken();
                       }
                     ),
                   ),
@@ -186,7 +205,7 @@ class _womanScreenState extends State<womanScreen> {
                           ),
                           child: Text('I\'m hungry'),
                           onPressed: () {
-                              sendNotification([token], 'I\'m hungry', 'Hey honey!');
+                              sendNotification([_token], 'I\'m hungry', 'Hey honey!');
                           }
                       ),
                     ),
@@ -203,7 +222,7 @@ class _womanScreenState extends State<womanScreen> {
                           ),
                           child: Text('I want Bubble Tea'),
                           onPressed: () {
-                            sendNotification([token], 'I want Bubble Tea', 'Hey honey!');
+                            sendNotification([_token], 'I want Bubble Tea', 'Hey honey!');
                           }
                       ),
                     ),
@@ -225,7 +244,7 @@ class _womanScreenState extends State<womanScreen> {
                           ),
                           child: Text('Miss yo'),
                           onPressed: () {
-                            sendNotification([token], 'Miss yo', 'Hey honey!');
+                            sendNotification([_token], 'Miss yo', 'Hey honey!');
                           }
                       ),
                     ),
@@ -242,7 +261,7 @@ class _womanScreenState extends State<womanScreen> {
                           ),
                           child: Text('Call me plsss'),
                           onPressed: () {
-                            sendNotification([token], 'Call me plsss', 'Hey honey!');
+                            sendNotification([_token], 'Call me plsss', 'Hey honey!');
                           }
                       ),
                     ),

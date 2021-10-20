@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:Dyad/actions.dart';
 import 'package:flutter/material.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'constants.dart';
 
 class manScreen extends StatefulWidget {
@@ -13,14 +14,26 @@ class manScreen extends StatefulWidget {
 }
 
 class _manScreenState extends State<manScreen> {
-  var number = "";
+
+  var _number = "";
   bool _isLoading = false;
+
+  // load number from local storage
+  void _loadNumber() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _number = (prefs.getString('number') ?? "");
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     configOneSignal();
+    _loadNumber();
   }
 
+  // OneSignal config
   void configOneSignal() {
     OneSignal.shared.init(oneSignalID);
   }
@@ -29,15 +42,33 @@ class _manScreenState extends State<manScreen> {
     setState(() {
       _isLoading = true;
     });
+    // OneSignal Permission
     var status = await OneSignal.shared.getPermissionSubscriptionState();
     String tokenId = status.subscriptionStatus.userId;
+
+    // Post token and get number from APIs
     var response = await postToken(tokenId);
     var responseBody = json.decode(response.body);
+
+    // Save number to local storage
+    final prefs = await SharedPreferences.getInstance();
+    var returnNumber = responseBody["number"].toString();
+    if (returnNumber.isNotEmpty)
+      prefs.setString('number', returnNumber);
+
     setState(() {
-      number = responseBody["number"].toString();
+      _number = responseBody["number"].toString();
       _isLoading = false;
     });
-    //print(responseBody["number"]);
+  }
+
+  void removeNumber() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      prefs.remove('counter');
+      _number = "";
+    });
+
   }
 
   @override
@@ -58,7 +89,7 @@ class _manScreenState extends State<manScreen> {
           elevation: 0,
         ),
         backgroundColor: Colors.transparent,
-        body: number.isEmpty
+        body: _number.isEmpty
             ? Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -121,7 +152,7 @@ class _manScreenState extends State<manScreen> {
                 Container(
                   margin: EdgeInsets.only(bottom: 20, left: 60, right: 60),
                   child: Text(
-                    number,
+                    _number,
                     style: TextStyle(
                       fontSize: 90,
                       fontWeight: FontWeight.bold,
@@ -133,7 +164,7 @@ class _manScreenState extends State<manScreen> {
                   style: ButtonStyle(
                     foregroundColor: MaterialStateProperty.all<Color>(Colors.lightBlue.shade300),
                   ),
-                  onPressed: getNumber,
+                  onPressed: removeNumber,
                   child: Text('Generate new code?'),
                 )
               ],
